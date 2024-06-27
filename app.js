@@ -56,6 +56,23 @@ app.use(
   app.get("/property_types",PropType.getPropertyTypes);
   app.get("/ammenties",Ammenties.getammenities);
 
+  app.post('/user', (req, res) => {
+    const user = {
+        username: req.body.first_name + req.body.last_name,
+        mobile: req.body.phone_number,
+        email: req.body.email,
+        passport_no: req.body.passport_no
+    };
+
+    const sql = 'INSERT INTO users SET ?';
+    connection.query(sql, user, (err, result) => {
+        if (err) {
+            return res.status(500).send(err);
+        }
+        res.send(`User added with ID: ${result.insertId}`);
+    });
+});
+
   app.listen(port, () => {
     console.log(`App listening http://localhost:${port}`);
   });
