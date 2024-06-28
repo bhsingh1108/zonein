@@ -12,6 +12,7 @@ const app = express();
 const Home= require('./controllers/home');
 const PropType= require('./controllers/prop_types');
 const Ammenties= require('./controllers/ammenties');
+const Users = require('./controllers/users')
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
@@ -55,23 +56,9 @@ app.use(
   app.get("/",Home.home);
   app.get("/property_types",PropType.getPropertyTypes);
   app.get("/ammenties",Ammenties.getammenities);
-//user routes
-  app.post('/user', (req, res) => {
-    const user = {
-        username: req.body.first_name + req.body.last_name,
-        mobile: req.body.phone_number,
-        email: req.body.email,
-        passport_no: req.body.passport_no
-    };
+  app.post("/user",Users.postusers);
 
-    const sql = 'INSERT INTO users SET ?';
-    connection.query(sql, user, (err, result) => {
-        if (err) {
-            return res.status(500).send(err);
-        }
-        res.send(`User added with ID: ${result.insertId}`);
-    });
-});
+  app.set('conn', connection)
 
   app.listen(port, () => {
     console.log(`App listening http://localhost:${port}`);
