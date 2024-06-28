@@ -55,7 +55,7 @@ app.use(
   app.get("/",Home.home);
   app.get("/property_types",PropType.getPropertyTypes);
   app.get("/ammenties",Ammenties.getammenities);
-
+//user routes
   app.post('/user', (req, res) => {
     const user = {
         username: req.body.first_name + req.body.last_name,
