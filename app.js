@@ -18,6 +18,9 @@ const Events = require('./controllers/events');
 =======
 const Users = require('./controllers/users')
 const Ticket = require('./controllers/ticket')
+<<<<<<< Updated upstream
+>>>>>>> Stashed changes
+=======
 >>>>>>> Stashed changes
 
 
@@ -69,10 +72,15 @@ app.use(
   app.get("/ammenties",Ammenties.getammenities);
   app.post("/user",Users.postusers);
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   app.post('/event_post',Events.createEvent);
   app.get('/get_events',Events.getEvent);
   app.set('conn', connection)
   
+=======
+  app.post("/ticket",Ticket.postticket);  
+  app.get("/ticket/:user_id/:event_id",Ticket.getticket); 
+>>>>>>> Stashed changes
 =======
   app.post("/ticket",Ticket.postticket);  
   app.get("/ticket/:user_id/:event_id",Ticket.getticket); 
