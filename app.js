@@ -12,7 +12,8 @@ const app = express();
 const Home= require('./controllers/home');
 const PropType= require('./controllers/prop_types');
 const Ammenties= require('./controllers/ammenties');
-const Users = require('./controllers/users')
+const Users = require('./controllers/users');
+const Events = require('./controllers/events');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
@@ -57,8 +58,10 @@ app.use(
   app.get("/property_types",PropType.getPropertyTypes);
   app.get("/ammenties",Ammenties.getammenities);
   app.post("/user",Users.postusers);
-
+  app.post('/event_post',Events.createEvent);
+  app.get('/get_events',Events.getEvent);
   app.set('conn', connection)
+  
 
   app.listen(port, () => {
     console.log(`App listening http://localhost:${port}`);
