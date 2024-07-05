@@ -12,10 +12,18 @@ const app = express();
 const Home= require('./controllers/home');
 const PropType= require('./controllers/prop_types');
 const Ammenties= require('./controllers/ammenties');
+<<<<<<< Updated upstream
 const Users = require('./controllers/users');
 const Events = require('./controllers/events');
+=======
+const Users = require('./controllers/users')
+const Ticket = require('./controllers/ticket')
+>>>>>>> Stashed changes
 
-app.use(bodyParser.urlencoded({ extended: true }));
+
+// app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(express.json());
 app.use(
     cors({
@@ -60,10 +68,15 @@ app.use(
   app.get("/property_types",PropType.getPropertyTypes);
   app.get("/ammenties",Ammenties.getammenities);
   app.post("/user",Users.postusers);
+<<<<<<< Updated upstream
   app.post('/event_post',Events.createEvent);
   app.get('/get_events',Events.getEvent);
   app.set('conn', connection)
   
+=======
+  app.post("/ticket",Ticket.postticket);  
+  app.get("/ticket/:user_id/:event_id",Ticket.getticket); 
+>>>>>>> Stashed changes
 
   app.listen(port, () => {
     console.log(`App listening http://localhost:${port}`);
