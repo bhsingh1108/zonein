@@ -60,15 +60,10 @@ app.use(
   app.get("/property_types",PropType.getPropertyTypes);
   app.get("/ammenties",Ammenties.getammenities);
   app.post("/user",Users.postusers);
-<<<<<<< HEAD
   app.post('/event_post',Events.createEvent);
   app.get('/get_events',Events.getEvent);
   app.set('conn', connection)
   
-=======
-  app.post("/upload",Users.postusers);  
-
->>>>>>> eea1c565217b8083455f687ff3112f1310c20d8c
 
   app.listen(port, () => {
     console.log(`App listening http://localhost:${port}`);
