@@ -12,16 +12,10 @@ const app = express();
 const Home= require('./controllers/home');
 const PropType= require('./controllers/prop_types');
 const Ammenties= require('./controllers/ammenties');
-<<<<<<< Updated upstream
 const Users = require('./controllers/users');
 const Events = require('./controllers/events');
-=======
-const Users = require('./controllers/users')
-const Ticket = require('./controllers/ticket')
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-=======
->>>>>>> Stashed changes
+const Users = require('./controllers/users');
+const Ticket = require('./controllers/ticket');
 
 
 // app.use(bodyParser.urlencoded({ extended: true }));
