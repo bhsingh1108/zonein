@@ -14,7 +14,6 @@ const PropType= require('./controllers/prop_types');
 const Ammenties= require('./controllers/ammenties');
 const Users = require('./controllers/users');
 const Events = require('./controllers/events');
-const Users = require('./controllers/users');
 const Ticket = require('./controllers/ticket');
 
 
