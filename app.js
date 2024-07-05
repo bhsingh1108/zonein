@@ -53,12 +53,14 @@ app.use(
     console.log('Connected to MySQL database as id ' + connection.threadId);
   });
 
+  app.set('conn', connection)
+
   app.get("/",Home.home);
   app.get("/property_types",PropType.getPropertyTypes);
   app.get("/ammenties",Ammenties.getammenities);
   app.post("/user",Users.postusers);
+  app.post("/upload",Users.postusers);  
 
-  app.set('conn', connection)
 
   app.listen(port, () => {
     console.log(`App listening http://localhost:${port}`);
