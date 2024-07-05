@@ -71,20 +71,10 @@ app.use(
   app.get("/property_types",PropType.getPropertyTypes);
   app.get("/ammenties",Ammenties.getammenities);
   app.post("/user",Users.postusers);
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
   app.post('/event_post',Events.createEvent);
   app.get('/get_events',Events.getEvent);
-  app.set('conn', connection)
-  
-=======
   app.post("/ticket",Ticket.postticket);  
   app.get("/ticket/:user_id/:event_id",Ticket.getticket); 
->>>>>>> Stashed changes
-=======
-  app.post("/ticket",Ticket.postticket);  
-  app.get("/ticket/:user_id/:event_id",Ticket.getticket); 
->>>>>>> Stashed changes
 
   app.listen(port, () => {
     console.log(`App listening http://localhost:${port}`);
