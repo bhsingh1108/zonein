@@ -38,7 +38,7 @@ exports.postusers= (req, res) => {
             // res.status(200).send({ message: `User added with ID: ${userId}` });
             res.send({
                 'status': 200,
-                'user id': userId
+                'user_id': userId
             });
         } else {
             res.status(500).send({ message: 'User added but failed to retrieve ID' });
