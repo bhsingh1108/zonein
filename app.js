@@ -65,7 +65,7 @@ app.use(
   app.get("/ammenties",Ammenties.getammenities);
   app.post("/user",Users.postusers);
   app.post('/event_post',Events.createEvent);
-  app.get('/get_events',Events.getEvent);
+  app.get('/get_events/:status',Events.getEvent);
   app.post("/ticket",Ticket.postticket);  
   app.get("/ticket/:user_id/:event_id",Ticket.getticket); 
 

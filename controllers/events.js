@@ -10,12 +10,13 @@ exports.createEvent = (req, res) => {
   const hours = String(dateTimeObj.getHours()).padStart(2, "0");
   const minutes = String(dateTimeObj.getMinutes()).padStart(2, "0");
   const seconds = String(dateTimeObj.getSeconds()).padStart(2, "0");
+  var passEncoded = req.body.pass_enc?Buffer.from(req.body.pass_enc).toString('base64'):'';
   const event_data = {
     userid: req.body.userid,
     event_title: req.body.event_title,
     event_desc: req.body.event_desc ? req.body.event_desc : "",
     property_type: req.body.property_type,
-    property_images_1: req.body.property_img_1 ? req.body.property_img_1 : "",
+    property_images_1: req.body.property_img_1 ? JSON.stringify(req.body.property_img_1) : "",
     property_images_2: req.body.property_img_2 ? req.body.property_img_2 : "",
     property_images_3: req.body.property_img_3 ? req.body.property_img_3 : "",
     property_images_4: req.body.property_img_4 ? req.body.property_img_4 : "",
@@ -25,15 +26,13 @@ exports.createEvent = (req, res) => {
     property_images_8: req.body.property_img_8 ? req.body.property_img_8 : "",
     address: req.body.address ? req.body.address : "",
     event_date:`${year}-${month}-${day} ${hours}:${minutes}:${seconds}`,
-    ammenities:req.body.ammenities?req.body.ammenities:'',
+    ammenities:req.body.ammenities?JSON.stringify(req.body.ammenities):'',
     house_rules:req.body.house_rules?req.body.house_rules:'',
     mobile:req.body.mobile,
-    pass_enc:req.body.pass_enc?req.body.pass_enc:'',
+    pass_enc:passEncoded,
     min_price:req.body.min_price?req.body.min_price:'150',
     max_price:req.body.max_price?req.body.max_price:'1000'
   };
-  console.log(event_data);
-
     const sql = "INSERT INTO event_details SET ?";
     connection.query(sql, event_data, (err, result) => {
       if (err) {
@@ -41,21 +40,30 @@ exports.createEvent = (req, res) => {
       }
       res.json({
         'status':200,
-        'message':result.insertId
+        'data':result.insertId
       })
     });
 };
 exports.getEvent=(req,res)=>{
     var connection = req.app.get("conn");
-    const userid=req.body.userid;
-    const sql = "select * from event_details where userid='?'";
-    connection.query(sql, userid, (err, result) => {
+    const status=req.params.status;
+    const sql = "select * from event_details where event_status=?";
+    connection.query(sql, status, (err, result) => {
         if (err) {
           return res.status(500).send(err);
         }
-        res.json({
-          'status':200,
-          'message':result
-        })
+        if (result.length > 0) {
+          const data = result;
+          // Decode the pass_enc value
+          for (let i = 0; i < data.length; i++) {
+              data[i].pass_enc = Buffer.from(data[i].pass_enc, 'base64').toString('ascii');
+          }            
+          res.send({
+              'status': 200,
+              'data': data
+          });
+      } else {
+          res.status(404).send({ message: 'no event found' });
+      }
       });
 }
