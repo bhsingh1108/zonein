@@ -30,7 +30,7 @@ exports.getticket= (req, res) => {
         }
         if (results.length > 0) {
             const ticket = results;
-            console.log(ticket)
+            // console.log(ticket)
             // Decode the pass_enc value
             for (let i = 0; i < ticket.length; i++) {
                 ticket[i].pass_enc = Buffer.from(ticket[i].pass_enc, 'base64').toString('ascii');

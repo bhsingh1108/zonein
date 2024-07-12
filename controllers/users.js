@@ -1,4 +1,4 @@
-exports.postusers= (req, res) => {
+exports.postusers = (req, res) => {
     var connection = req.app.get('conn');
     const last_name=req.body.last_name?req.body.last_name:'';
     const user = {
@@ -46,6 +46,29 @@ exports.postusers= (req, res) => {
     });
     });
 });
+};
+
+
+// Route to get user data based on user_id and email
+exports.getusers = (req, res) => {
+    var connection = req.app.get('conn');
+    const getUserSql = 'SELECT * FROM users WHERE id = ? AND email = ?';
+    connection.query(getUserSql, [req.params.user_id, req.params.email], (err, results) => {
+        if (err) {
+            return res.status(500).send(err);
+        }
+        if (results.length > 0) {
+            res.send({
+                'status': 200,
+                'data': results
+            });
+        } else {
+            res.send({
+                'status': 300,
+                'data': 'User not found'
+            });
+        }
+    });
 };
 
 // // Function to encrypt the image
