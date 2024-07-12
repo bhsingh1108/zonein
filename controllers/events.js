@@ -57,6 +57,7 @@ exports.getEvent=(req,res)=>{
           // Decode the pass_enc value
           for (let i = 0; i < data.length; i++) {
               data[i].pass_enc = Buffer.from(data[i].pass_enc, 'base64').toString('ascii');
+              data[i].property_images_1=JSON.parse(data[i].property_images_1);
           }            
           res.send({
               'status': 200,
