@@ -10,6 +10,7 @@ exports.createEvent = (req, res) => {
   const hours = String(dateTimeObj.getHours()).padStart(2, "0");
   const minutes = String(dateTimeObj.getMinutes()).padStart(2, "0");
   const seconds = String(dateTimeObj.getSeconds()).padStart(2, "0");
+ // `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
   var passEncoded = req.body.pass_enc?Buffer.from(req.body.pass_enc).toString('base64'):'';
   const event_data = {
     userid: req.body.userid,
@@ -25,7 +26,10 @@ exports.createEvent = (req, res) => {
     property_images_7: req.body.property_img_7 ? req.body.property_img_7 : "",
     property_images_8: req.body.property_img_8 ? req.body.property_img_8 : "",
     address: req.body.address ? req.body.address : "",
-    event_date:`${year}-${month}-${day} ${hours}:${minutes}:${seconds}`,
+    event_date:req.body.date?req.body.date:'',
+    event_time:req.body.time?req.body.time:'',
+    host_name:req.body.host_name?req.body.host_name:'',
+    nationality:req.body.nationality?req.body.nationality:'',
     ammenities:req.body.ammenities?JSON.stringify(req.body.ammenities):'',
     house_rules:req.body.house_rules?req.body.house_rules:'',
     mobile:req.body.mobile,
@@ -67,4 +71,9 @@ exports.getEvent=(req,res)=>{
           res.status(404).send({ message: 'no event found' });
       }
       });
+}
+exports.updateEvent=(req,res)=>{
+  var connection=req.app.get("con");
+  const event_id=req.params.event_id;
+   
 }
