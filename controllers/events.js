@@ -73,7 +73,22 @@ exports.getEvent=(req,res)=>{
       });
 }
 exports.updateEvent=(req,res)=>{
-  var connection=req.app.get("con");
+  var connection=req.app.get("conn");
   const event_id=req.params.event_id;
+  const event_status=req.body.event_status;
+  const checkEventSql = 'SELECT * FROM event_details WHERE id = ?';
+  
+  connection.query(checkEventSql, event_id, (err, results) => {
+    console.log(checkEventSql);
+    if (err) {
+        return res.status(500).send(err);
+    }
+    if (results.length > 0) {
+      console.log(results);
+        console.log(results.length);
+    }
+  });
+
+
    
 }
