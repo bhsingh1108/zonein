@@ -35,7 +35,9 @@ exports.createEvent = (req, res) => {
     mobile:req.body.mobile,
     pass_enc:passEncoded,
     min_price:req.body.min_price?req.body.min_price:'150',
-    max_price:req.body.max_price?req.body.max_price:'1000'
+    max_price:req.body.max_price?req.body.max_price:'1000',
+    user_selfie:req.body.user_selfie?req.body.user_selfie:'',
+    event_thumbnail:req.body.event_thumbnail?req.body.event_thumbnail:''
   };
     const sql = "INSERT INTO event_details SET ?";
     connection.query(sql, event_data, (err, result) => {
@@ -62,6 +64,7 @@ exports.getEvent=(req,res)=>{
           for (let i = 0; i < data.length; i++) {
               data[i].pass_enc = Buffer.from(data[i].pass_enc, 'base64').toString('ascii');
               data[i].property_images_1=JSON.parse(data[i].property_images_1);
+              data[i].ammenities=JSON.parse(data[i].ammenities);
           }            
           res.send({
               'status': 200,
@@ -79,13 +82,20 @@ exports.updateEvent=(req,res)=>{
   const checkEventSql = 'SELECT * FROM event_details WHERE id = ?';
   
   connection.query(checkEventSql, event_id, (err, results) => {
-    console.log(checkEventSql);
     if (err) {
         return res.status(500).send(err);
     }
     if (results.length > 0) {
-      console.log(results);
-        console.log(results.length);
+      const updateEventDetails = 'update event_details set event_status=? where id=?';
+      connection.query(updateEventDetails, [event_status, event_id], (err, results) => {
+        if (err) {
+          return res.status(500).send(err);
+        }
+        res.json({
+          'status':200,
+          'data':results
+        });
+      });
     }
   });
 
