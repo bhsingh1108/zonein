@@ -1,4 +1,4 @@
-exports.postticket= (req, res) => {
+exports.postticket = (req, res) => {
     var connection = req.app.get('conn');
     var passEncoded = Buffer.from(req.body.pass_enc).toString('base64')
     const ticket = {
@@ -21,7 +21,7 @@ exports.postticket= (req, res) => {
     });
 }
 
-exports.getticket= (req, res) => {
+exports.getticket = (req, res) => {
     var connection = req.app.get('conn');
     const getTicketSql = 'SELECT * FROM ticket_details WHERE userid = ? AND event_id = ?';
     connection.query(getTicketSql, [req.params.user_id, req.params.event_id], (err, results) => {
@@ -45,3 +45,25 @@ exports.getticket= (req, res) => {
     });
 }
 
+
+// Route to delete records from tickets table
+exports.deleteticket = (req, res) => {
+    var connection = req.app.get('conn');
+    // const { user_id, event_id, ticket_name } = req.body;
+
+    if (!req.params.user_id || !req.params.event_id || !req.params.ticket_id) {
+        return res.status(400).send({ message: 'User ID, Event ID, and Ticket ID are required' });
+    }
+
+    const deleteTicketSql = 'DELETE FROM ticket_details WHERE userid = ? AND event_id = ? AND id = ?';
+    connection.query(deleteTicketSql, [req.params.user_id, req.params.event_id, req.params.ticket_id], (err, result) => {
+        if (err) {
+            return res.status(500).send(err);
+        }
+        if (result.affectedRows > 0) {
+            res.status(200).send({ message: 'Ticket deleted successfully' });
+        } else {
+            res.status(404).send({ message: 'Ticket not found' });
+        }
+    });
+};

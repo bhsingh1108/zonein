@@ -71,6 +71,49 @@ exports.getusers = (req, res) => {
     });
 };
 
+
+// Route to get event details based on user_id
+exports.getevents = (req, res) => {
+    var connection = req.app.get('conn');
+    const user_id = req.params.user_id;
+
+    if (!user_id) {
+        res.send({
+            'status': 400,
+            'data': 'User ID is required'
+        });
+    }
+
+    // Step 1: Get event_id(s) from tickets table
+    const getEventIdsSql = 'SELECT event_id FROM ticket_details WHERE userid = ?';
+    connection.query(getEventIdsSql, [user_id], (err, results) => {
+        if (err) {
+            return res.status(500).send(err);
+        }
+
+        if (results.length > 0) {
+            console.log(results)
+            const eventIds = results.map(row => row.event_id);
+            console.log(eventIds)
+            // Step 2: Get event details from events table based on event_id(s)
+            const getEventsSql = 'SELECT * FROM event_details WHERE id IN (?)';
+            connection.query(getEventsSql, [eventIds], (err, eventResults) => {
+                if (err) {
+                    return res.status(500).send(err);
+                }
+                // console.log(eventResults)
+                if (eventResults.length > 0) {
+                    res.status(200).send({ status: 200, data: eventResults });
+                }
+                else {
+                    res.status(404).send({ status: 404, message: 'No event details found.'});
+                }
+            });
+        } else {
+            res.status(404).send({ status: 404, message: 'No events found for this user'});
+        }
+    });
+};
 // // Function to encrypt the image
 // const encryptImage = (buffer) => {
 //     const cipher = crypto.createCipher('aes-256-cbc', 'your_encryption_key');
