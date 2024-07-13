@@ -114,6 +114,33 @@ exports.getevents = (req, res) => {
         }
     });
 };
+
+
+
+exports.gethostedevents = (req, res) => {
+    var connection = req.app.get('conn');
+    const user_id = req.params.user_id;
+
+    if (!user_id) {
+        res.send({
+            'status': 400,
+            'data': 'User ID is required'
+        });
+    }
+
+    const getEventIdsSql = 'SELECT * FROM event_details WHERE userid = ? and event_date > NOW()';
+    connection.query(getEventIdsSql, [user_id], (err, hostedResults) => {
+        if (err) {
+            return res.status(400).send(err);
+        }
+        if (hostedResults.length > 0) {
+            res.status(200).send({ status: 200, data: hostedResults });
+        }
+        else {
+            res.status(404).send({ status: 404, message: 'No event details found.'});
+        }
+    });
+};
 // // Function to encrypt the image
 // const encryptImage = (buffer) => {
 //     const cipher = crypto.createCipher('aes-256-cbc', 'your_encryption_key');
