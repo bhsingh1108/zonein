@@ -73,6 +73,7 @@ app.use(
   app.get("/events/:user_id",Users.getevents);
   app.delete('/ticket/:user_id/:ticket_id/:event_id',Ticket.deleteticket)
   app.get("/hosted_events/:user_id", Users.gethostedevents)
+  app.put("/update_user/:user_id", Users.updateUser)
 
   app.listen(port, () => {
     console.log(`App listening http://localhost:${port}`);

@@ -1,15 +1,18 @@
 exports.postusers = (req, res) => {
     var connection = req.app.get('conn');
     const last_name=req.body.last_name?req.body.last_name:'';
+    var profilePicEncoded = Buffer.from(req.body.profile_pic).toString('base64')
     const user = {
         username: req.body.first_name +' '+ last_name,
         mobile: req.body.phone_number,
         email: req.body.email,
-        passport_no: req.body.passport_no?req.body.passport_no:'null'
+        passport_no: req.body.passport_no?req.body.passport_no:'null',
+        profile_pic: profilePicEncoded,
     };
     
     const checkEmailSql = 'SELECT * FROM users WHERE email = ?';
     connection.query(checkEmailSql, [user.email], (err, results) => {
+        console.log(results)
         if (err) {
             return res.status(500).send(err);
         }
@@ -58,6 +61,12 @@ exports.getusers = (req, res) => {
             return res.status(500).send(err);
         }
         if (results.length > 0) {
+            const user = results;
+            // console.log(user)
+            // Decode the pass_enc value
+            for (let i = 0; i < user.length; i++) {
+                user[i].profile_pic = Buffer.from(user[i].profile_pic, 'base64').toString('ascii');
+            }
             res.send({
                 'status': 200,
                 'data': results
@@ -71,6 +80,34 @@ exports.getusers = (req, res) => {
     });
 };
 
+
+exports.updateUser = (req, res) => {
+    var connection = req.app.get('conn');
+    const userId = req.params.user_id;
+    var profilePicEncoded = Buffer.from(req.body.profile_pic).toString('base64')
+    const email = req.body.email;
+    const profile_pic = profilePicEncoded
+    
+    if (!email || !profile_pic) {
+        return res.status(400).send({ message: 'Email and First Name are required' });
+    }
+
+    const updateUserSql = 'UPDATE users SET email = ?, profile_pic = ? WHERE id = ?';
+    connection.query(updateUserSql, [email, profile_pic, userId], (err, result) => {
+        if (err) {
+            return res.status(500).send(err);
+        }
+        if (result.affectedRows > 0) {
+            res.send({
+                'status': 200,
+                'data': 'User details updated successfully'
+            });
+            // res.status(200).send({ message: 'User details updated successfully' });
+        } else {
+            res.status(404).send({ message: 'User not found' });
+        }
+    });
+};
 
 // Route to get event details based on user_id
 exports.getevents = (req, res) => {
