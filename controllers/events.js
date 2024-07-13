@@ -78,7 +78,9 @@ exports.getEvent=(req,res)=>{
 exports.updateEvent=(req,res)=>{
   var connection=req.app.get("conn");
   const event_id=req.params.event_id;
-  const event_status=req.body.event_status;
+  const capacity=req.body.capacity?req.body.capacity:'0';
+  const ticket_price=req.body.ticket_price?req.body.ticket_price:'0';
+  const event_status=req.body.event_status?req.body.event_status:0;
   const checkEventSql = 'SELECT * FROM event_details WHERE id = ?';
   
   connection.query(checkEventSql, event_id, (err, results) => {
@@ -86,8 +88,8 @@ exports.updateEvent=(req,res)=>{
         return res.status(500).send(err);
     }
     if (results.length > 0) {
-      const updateEventDetails = 'update event_details set event_status=? where id=?';
-      connection.query(updateEventDetails, [event_status, event_id], (err, results) => {
+      const updateEventDetails = 'update event_details set event_status=?,capacity=?,ticket_price=? where id=?';
+      connection.query(updateEventDetails, [event_status,capacity,ticket_price,event_id], (err, results) => {
         if (err) {
           return res.status(500).send(err);
         }
