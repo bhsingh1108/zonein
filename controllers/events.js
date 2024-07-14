@@ -36,7 +36,7 @@ exports.createEvent = (req, res) => {
     pass_enc:passEncoded,
     min_price:req.body.min_price?req.body.min_price:'150',
     max_price:req.body.max_price?req.body.max_price:'1000',
-    user_selfie:req.body.user_selfie?req.body.user_selfie:'',
+    // user_selfie:req.body.user_selfie?req.body.user_selfie:'',
     event_thumbnail:req.body.event_thumbnail?req.body.event_thumbnail:''
   };
     const sql = "INSERT INTO event_details SET ?";
