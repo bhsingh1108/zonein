@@ -140,7 +140,15 @@ exports.getevents = (req, res) => {
                 }
                 // console.log(eventResults)
                 if (eventResults.length > 0) {
-                    res.status(200).send({ status: 200, data: eventResults });
+                    const data = eventResults;
+          // Decode the pass_enc value
+                    for (let i = 0; i < data.length; i++) {
+                        data[i].pass_enc = Buffer.from(data[i].pass_enc, 'base64').toString('ascii');
+                        data[i].property_images_1=JSON.parse(data[i].property_images_1);
+                        data[i].ammenities=JSON.parse(data[i].ammenities);
+                    }
+
+                    res.status(200).send({ status: 200, data: data });
                 }
                 else {
                     res.status(404).send({ status: 404, message: 'No event details found.'});
@@ -171,7 +179,14 @@ exports.gethostedevents = (req, res) => {
             return res.status(400).send(err);
         }
         if (hostedResults.length > 0) {
-            res.status(200).send({ status: 200, data: hostedResults });
+            const data = hostedResults;
+          // Decode the pass_enc value
+            for (let i = 0; i < data.length; i++) {
+                data[i].pass_enc = Buffer.from(data[i].pass_enc, 'base64').toString('ascii');
+                data[i].property_images_1=JSON.parse(data[i].property_images_1);
+                data[i].ammenities=JSON.parse(data[i].ammenities);
+            }
+            res.status(200).send({ status: 200, data: data });
         }
         else {
             res.status(404).send({ status: 404, message: 'No event details found.'});
