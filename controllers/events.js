@@ -1,7 +1,7 @@
 exports.createEvent = (req, res) => {
     var connection = req.app.get("conn");
   const date = req.body.date;
-  const time = req.body.time;
+  const time = JSON.stringify(req.body.time);
   const dateTimeStr = `${date} ${time}`;
   const dateTimeObj = new Date(dateTimeStr);
   const year = dateTimeObj.getFullYear();
