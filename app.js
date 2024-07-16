@@ -69,7 +69,7 @@ app.use(
   app.put('/update_event/:event_id',Events.updateEvent);
   app.post("/ticket",Ticket.postticket);  
   app.get("/ticket/:user_id/:event_id",Ticket.getticket); 
-  app.get("/user/:user_id/:email",Users.getusers);
+  app.get("/user/:user_id",Users.getusers);
   app.get("/events/:user_id",Users.getevents);
   app.delete('/ticket/:user_id/:ticket_id/:event_id',Ticket.deleteticket)
   app.get("/hosted_events/:user_id", Users.gethostedevents)

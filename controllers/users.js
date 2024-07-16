@@ -1,18 +1,17 @@
 exports.postusers = (req, res) => {
     var connection = req.app.get('conn');
     const last_name=req.body.last_name?req.body.last_name:'';
-    var profilePicEncoded = Buffer.from(req.body.profile_pic).toString('base64')
+    // var profilePicEncoded = Buffer.from(req.body.profile_pic).toString('base64')
     const user = {
         username: req.body.first_name +' '+ last_name,
         mobile: req.body.phone_number,
-        email: req.body.email,
-        passport_no: req.body.passport_no?req.body.passport_no:'null',
-        profile_pic: profilePicEncoded,
+        email: req.body.email?req.body.email:'',
+        // passport_no: req.body.passport_no?req.body.passport_no:'null',
+        // profile_pic: profilePicEncoded,
     };
     
-    const checkEmailSql = 'SELECT * FROM users WHERE email = ?';
-    connection.query(checkEmailSql, [user.email], (err, results) => {
-        console.log(results)
+    const checkEmailSql = 'SELECT * FROM users WHERE mobile = ?';
+    connection.query(checkEmailSql, [user.mobile], (err, results) => {
         if (err) {
             return res.status(500).send(err);
         }
@@ -31,8 +30,8 @@ exports.postusers = (req, res) => {
         //     'user id': result
         // });
 
-    const getUserSql = 'SELECT id FROM users WHERE email = ? AND passport_no = ?';
-    connection.query(getUserSql, [user.email, user.passport_no], (err, results) => {
+    const getUserSql = 'SELECT id FROM users WHERE mobile = ?';
+    connection.query(getUserSql, [user.mobile], (err, results) => {
         if (err) {
             return res.status(500).send(err);
         }
@@ -55,21 +54,21 @@ exports.postusers = (req, res) => {
 // Route to get user data based on user_id and email
 exports.getusers = (req, res) => {
     var connection = req.app.get('conn');
-    const getUserSql = 'SELECT * FROM users WHERE id = ? AND email = ?';
-    connection.query(getUserSql, [req.params.user_id, req.params.email], (err, results) => {
+    const getUserSql = 'SELECT * FROM users WHERE id = ?';
+    connection.query(getUserSql, [req.params.user_id], (err, results) => {
         if (err) {
             return res.status(500).send(err);
         }
         if (results.length > 0) {
             const user = results;
-            // console.log(user)
-            // Decode the pass_enc value
             for (let i = 0; i < user.length; i++) {
-                user[i].profile_pic = Buffer.from(user[i].profile_pic, 'base64').toString('ascii');
+                if (user[i].profile_pic != null) {
+                    user[i].profile_pic = Buffer.from(user[i].profile_pic, 'base64').toString('ascii');
+                }    
             }
             res.send({
                 'status': 200,
-                'data': results
+                'data': user
             });
         } else {
             res.send({
@@ -84,16 +83,27 @@ exports.getusers = (req, res) => {
 exports.updateUser = (req, res) => {
     var connection = req.app.get('conn');
     const userId = req.params.user_id;
-    var profilePicEncoded = Buffer.from(req.body.profile_pic).toString('base64')
-    const email = req.body.email;
-    const profile_pic = profilePicEncoded
-    
-    if (!email || !profile_pic) {
-        return res.status(400).send({ message: 'Email and First Name are required' });
+    const email = req.body.email?req.body.email:'';
+    var profile_pic = req.body.profile_pic?req.body.profile_pic:'';
+    if (profile_pic.length) {
+        const profilePicEncoded = Buffer.from(req.body.profile_pic).toString('base64')
+        var profile_pic = profilePicEncoded
     }
+    
+    if (!email && !profile_pic) {
+        res.status(404).send({ status: 404, message: 'Invalid data'})
+    }
+   
 
-    const updateUserSql = 'UPDATE users SET email = ?, profile_pic = ? WHERE id = ?';
-    connection.query(updateUserSql, [email, profile_pic, userId], (err, result) => {
+    const updateUserSql = `UPDATE users SET ${email.length?profile_pic.length? 'email = ?, profile_pic = ?':'email = ?':'profile_pic = ?'} WHERE id = ?`;
+    const data = 
+    email.length && profile_pic.length 
+        ? [email, profile_pic, userId] 
+        : email.length 
+            ? [email, userId] 
+            : [profile_pic, userId];
+    
+    connection.query(updateUserSql, data, (err, result) => {
         if (err) {
             return res.status(500).send(err);
         }
@@ -129,16 +139,13 @@ exports.getevents = (req, res) => {
         }
 
         if (results.length > 0) {
-            console.log(results)
             const eventIds = results.map(row => row.event_id);
-            console.log(eventIds)
             // Step 2: Get event details from events table based on event_id(s)
             const getEventsSql = 'SELECT * FROM event_details WHERE id IN (?)';
             connection.query(getEventsSql, [eventIds], (err, eventResults) => {
                 if (err) {
                     return res.status(500).send(err);
                 }
-                // console.log(eventResults)
                 if (eventResults.length > 0) {
                     const data = eventResults;
           // Decode the pass_enc value
