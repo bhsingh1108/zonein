@@ -1,5 +1,5 @@
 exports.makePayment = async (req, res) => {
-  const PayTabs = require("PayTabs_pt2");
+  const PayTabs = require("payTabs_pt2");
   const axios = require("axios");
   require("dotenv").config();
   var connection = req.app.get("conn");
