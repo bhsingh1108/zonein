@@ -40,7 +40,8 @@ exports.getticket = (req, res) => {
                 'data': ticket
             });
         } else {
-            res.status(404).send({ message: 'Ticket not found' });
+            res.send({ 'status': 300,
+                'data': 'Ticket not found' });
         }
     });
 }

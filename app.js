@@ -15,6 +15,7 @@ const Ammenties= require('./controllers/ammenties');
 const Users = require('./controllers/users');
 const Events = require('./controllers/events');
 const Ticket = require('./controllers/ticket');
+const Payment=require('./controllers/payments');
 
 
 // app.use(bodyParser.urlencoded({ extended: true }));
@@ -66,14 +67,16 @@ app.use(
   app.post("/user",Users.postusers);
   app.post('/event_post',Events.createEvent);
   app.get('/get_events/:status',Events.getEvent);
+  app.get('/get_event_userid_eventid/:userid/:eventid',Events.getEventOnUserEvent);
   app.put('/update_event/:event_id',Events.updateEvent);
   app.post("/ticket",Ticket.postticket);  
   app.get("/ticket/:user_id/:event_id",Ticket.getticket); 
   app.get("/user/:user_id",Users.getusers);
   app.get("/events/:user_id",Users.getevents);
-  app.delete('/ticket/:user_id/:ticket_id/:event_id',Ticket.deleteticket)
-  app.get("/hosted_events/:user_id", Users.gethostedevents)
-  app.put("/update_user/:user_id", Users.updateUser)
+  app.delete('/ticket/:user_id/:ticket_id/:event_id',Ticket.deleteticket);
+  app.get("/hosted_events/:user_id", Users.gethostedevents);
+  app.put("/update_user/:user_id", Users.updateUser);
+  app.post("/payments",Payment.makePayment);
 
   app.listen(port, () => {
     console.log(`App listening http://localhost:${port}`);
