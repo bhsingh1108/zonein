@@ -53,7 +53,11 @@ exports.createEvent = (req, res) => {
 exports.getEvent=(req,res)=>{
     var connection = req.app.get("conn");
     const status=req.params.status;
-    const sql = "select * from event_details where event_status=?";
+    if(status==="all"){
+      var sql = "select * from event_details order by id desc";
+    }else{
+    var sql = "select * from event_details where event_status=?";
+    }
     connection.query(sql, status, (err, result) => {
         if (err) {
           return res.status(500).send(err);
