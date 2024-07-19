@@ -1,5 +1,6 @@
-exports.createEvent = (req, res) => {
+exports.createEvent = async(req, res) => {
     var connection = req.app.get("conn");
+    const axios = require("axios");
   const date = req.body.date;
   const time = JSON.stringify(req.body.time);
   const dateTimeStr = `${date} ${time}`;
@@ -12,6 +13,8 @@ exports.createEvent = (req, res) => {
   const seconds = String(dateTimeObj.getSeconds()).padStart(2, "0");
  // `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
   var passEncoded = req.body.pass_enc?Buffer.from(req.body.pass_enc).toString('base64'):'';
+  const profile_pic=await getUserProfilePic(req.body.userid);
+  const profile_pic_encoded=Buffer.from(profile_pic).toString('base64');
   const event_data = {
     userid: req.body.userid,
     event_title: req.body.event_title,
@@ -36,7 +39,7 @@ exports.createEvent = (req, res) => {
     pass_enc:passEncoded,
     min_price:req.body.min_price?req.body.min_price:'150',
     max_price:req.body.max_price?req.body.max_price:'1000',
-    // user_selfie:req.body.user_selfie?req.body.user_selfie:'',
+    user_selfie:profile_pic_encoded?profile_pic_encoded:'',
     event_thumbnail:req.body.event_thumbnail?req.body.event_thumbnail:''
   };
     const sql = "INSERT INTO event_details SET ?";
@@ -49,7 +52,18 @@ exports.createEvent = (req, res) => {
         'data':result.insertId
       })
     });
+    async function getUserProfilePic(userid){
+      const URL = process.env.BASE_URL + `user/${userid}`;
+        try {
+          const response = await axios.get(URL);
+          return response.data.data[0].profile_pic;
+        } catch (error) {
+          console.error("Error making GET request:", error);
+          throw error;
+        }
+    }
 };
+
 exports.getEvent=(req,res)=>{
     var connection = req.app.get("conn");
     const status=req.params.status;
@@ -64,9 +78,11 @@ exports.getEvent=(req,res)=>{
         }
         if (result.length > 0) {
           const data = result;
+          
           // Decode the pass_enc value
           for (let i = 0; i < data.length; i++) {
               data[i].pass_enc = Buffer.from(data[i].pass_enc, 'base64').toString('ascii');
+              data[i].user_selfie = Buffer.from(data[i].user_selfie, 'base64').toString('ascii');
               data[i].property_images_1=JSON.parse(data[i].property_images_1);
               data[i].ammenities=JSON.parse(data[i].ammenities);
           }            
