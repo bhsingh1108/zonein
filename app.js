@@ -16,6 +16,7 @@ const Users = require('./controllers/users');
 const Events = require('./controllers/events');
 const Ticket = require('./controllers/ticket');
 const Payment=require('./controllers/payments');
+const Callback = require('./controllers/callback');
 
 
 // app.use(bodyParser.urlencoded({ extended: true }));
@@ -77,6 +78,10 @@ app.use(
   app.get("/hosted_events/:user_id", Users.gethostedevents);
   app.put("/update_user/:user_id", Users.updateUser);
   app.post("/payments",Payment.makePayment);
+  app.delete('/ticket/:user_id/:ticket_id/:event_id',Ticket.deleteticket)
+  app.get("/hosted_events/:user_id", Users.gethostedevents)
+  app.put("/update_user/:user_id", Users.updateUser)
+  app.post("/callback/order/:order_id",Callback.getcallbacks);
 
   app.listen(port, () => {
     console.log(`App listening http://localhost:${port}`);
