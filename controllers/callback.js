@@ -16,9 +16,17 @@ exports.getcallbacks = (req, res) => {
     }
 
     const callbackId = results[0].id;
+    const responseStatus = callback["payment_result"]["response_status"]
+    
+    if (responseStatus === 'A') {
+        var isPaidStatus = 'paid'
+    } else {
+        var isPaidStatus = 'failed'
+    }
 
-    const updateCallbackSql = 'UPDATE pre_orders SET callback_response = ? WHERE id = ?';
-    connection.query(updateCallbackSql, [JSON.stringify(callback), callbackId], (err, result) => {
+    const updateCallbackSql = 'UPDATE pre_orders SET is_paid = ?, callback_response = ? WHERE id = ?';
+    console.log(updateCallbackSql)
+    connection.query(updateCallbackSql, [isPaidStatus, JSON.stringify(callback), callbackId], (err, result) => {
         if (err) {
             return res.status(500).send(err);
         }
