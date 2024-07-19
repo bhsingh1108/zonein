@@ -1,10 +1,11 @@
 const express = require('express');
 const session = require("express-session");
+const multer = require('multer');
 const cors = require("cors");
 const mysql = require('mysql2');
 const cookieParser = require("cookie-parser");
 require('dotenv').config();
-const bodyParser = require('body-parser')
+const bodyParser = require('body-parser');
 const isAuth = require("./middlewares/is-auth");
 const UI_ROOT_URI=process.env.UI_ROOT_URI;
 const port = 3200;
@@ -18,9 +19,9 @@ const Ticket = require('./controllers/ticket');
 const Payment=require('./controllers/payments');
 const Callback = require('./controllers/callback');
 const Order = require('./controllers/orders');
+const PaymentVerification= require('./controllers/paymentverification');
 
-
-// app.use(bodyParser.urlencoded({ extended: true }));
+const upload = multer();
 app.use(bodyParser.json({ limit: '50mb' }));
 app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(express.json());
@@ -84,6 +85,7 @@ app.use(
   app.put("/update_user/:user_id", Users.updateUser)
   app.post("/callback/order/:order_id",Callback.getcallbacks);
   app.get("/orders/:orderid", Order.getorders)
+  app.post("/verify/order/:order_id",upload.none(),PaymentVerification.getverification);
 
   app.listen(port, () => {
     console.log(`App listening http://localhost:${port}`);
