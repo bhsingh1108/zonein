@@ -34,7 +34,8 @@ exports.getverification = async(req, res) => {
                           }
                         });
                         console.log($results);
-                        res.redirect('https://zonein.ae/payment-completed');
+                        window.location.href = "zonein://payment-completed"
+                       // res.redirect('https://zonein.ae/payment-completed');
                         // res.send({
                         //     status:200,
                         //     data:'zonein://payment-completed'
@@ -45,7 +46,8 @@ exports.getverification = async(req, res) => {
                 PayTabs.validatePayment(paymentVerificationData.tranRef, queryRequested);
             }
         }else{
-           res.redirect('https://zonein.ae/payment-failed');
+            window.location.href = "zonein://payment-failed"
+          // res.redirect('https://zonein.ae/payment-failed');
             // res.send({
             //     status:200,
             //     data:'zonein://payment-failed'
