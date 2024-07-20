@@ -87,10 +87,12 @@ app.use(
   app.get("/orders/:orderid", Order.getorders)
   app.post("/verify/order/:order_id",upload.none(),PaymentVerification.getverification);
   app.get('/payment-completed',(req, res) => {
-    res.redirect('zonein://payment-completed');
+    res.send({status:200,data:"zonein://payment-completed"});
+   // res.redirect('zonein://payment-completed');
   });
   app.get('/payment-failed',(req, res) => {
-    res.redirect('zonein://payment-completed');
+    res.send({status:200,data:"zonein://payment-completed"});
+   // res.redirect('zonein://payment-completed');
   });
 
   app.listen(port, () => {
