@@ -126,10 +126,9 @@ exports.updateEvent=(req,res)=>{
 }
 exports.getEventOnUserEvent=(req,res)=>{
   var connection = req.app.get("conn");
-  const userid=req.params.userid;
   const eventid=req.params.eventid;
-  const sql = "select id,userid,event_title,event_status,ticket_price from event_details where userid=? and id=?";
-  connection.query(sql, [userid,eventid], (err, result) => {
+  const sql = "select id,userid,event_title,event_status,ticket_price from event_details where  id=?";
+  connection.query(sql, [eventid], (err, result) => {
       if (err) {
         return res.status(500).send(err);
       }

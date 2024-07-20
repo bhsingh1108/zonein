@@ -70,7 +70,7 @@ app.use(
   app.post("/user",Users.postusers);
   app.post('/event_post',Events.createEvent);
   app.get('/get_events/:status',Events.getEvent);
-  app.get('/get_event_userid_eventid/:userid/:eventid',Events.getEventOnUserEvent);
+  app.get('/get_event_userid_eventid/:eventid',Events.getEventOnUserEvent);
   app.put('/update_event/:event_id',Events.updateEvent);
   app.post("/ticket",Ticket.postticket);  
   app.get("/ticket/:user_id/:event_id",Ticket.getticket); 

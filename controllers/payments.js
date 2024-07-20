@@ -24,7 +24,7 @@ exports.makePayment = async (req, res) => {
     });
     return;
   }
-  const getEventStatus = await getEvent(userid, eventid);
+  const getEventStatus = await getEvent(eventid);
   if (!getEventStatus) {
     res.json({
       status: 300,
@@ -161,9 +161,9 @@ exports.makePayment = async (req, res) => {
       throw error;
     }
   }
-  async function getEvent(userid, eventid) {
+  async function getEvent(eventid) {
     const URL =
-      process.env.BASE_URL + `get_event_userid_eventid/${userid}/${eventid}`;
+      process.env.BASE_URL + `get_event_userid_eventid/${eventid}`;
     try {
       const response = await axios.get(URL);
       if (response.data.status === 300) {
