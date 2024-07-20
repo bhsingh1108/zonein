@@ -86,6 +86,12 @@ app.use(
   app.post("/callback/order/:order_id",Callback.getcallbacks);
   app.get("/orders/:orderid", Order.getorders)
   app.post("/verify/order/:order_id",upload.none(),PaymentVerification.getverification);
+  app.get('/payment-completed',(req, res) => {
+    res.redirect('zonein://payment-completed');
+  });
+  app.get('/payment-failed',(req, res) => {
+    res.redirect('zonein://payment-completed');
+  });
 
   app.listen(port, () => {
     console.log(`App listening http://localhost:${port}`);
