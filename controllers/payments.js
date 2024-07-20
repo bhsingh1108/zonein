@@ -114,7 +114,8 @@ exports.makePayment = async (req, res) => {
         });
         res.send({
             status:200,
-            data:$results.redirect_url
+            data:$results.redirect_url,
+            order:preOrderData.orderid
         })
     }
     console.log($results);
