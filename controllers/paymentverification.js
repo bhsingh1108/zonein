@@ -34,24 +34,22 @@ exports.getverification = async(req, res) => {
                           }
                         });
                         console.log($results);
-                      //  window.location.href = "zonein://payment-completed"
-                        res.redirect('https://zonein.ae/payment-completed');
-                        // res.send({
-                        //     status:200,
-                        //     data:'zonein://payment-completed'
-                        // })
+                      //  res.redirect('https://zonein.ae/payment-completed');
+                        res.send({
+                            status:200,
+                            data:'zonein://payment-completed'
+                        })
                     }
                     
                 }
                 PayTabs.validatePayment(paymentVerificationData.tranRef, queryRequested);
             }
         }else{
-          //  window.location.href = "zonein://payment-failed"
-           res.redirect('https://zonein.ae/payment-failed');
-            // res.send({
-            //     status:200,
-            //     data:'zonein://payment-failed'
-            // })
+          // res.redirect('https://zonein.ae/payment-failed');
+            res.send({
+                status:200,
+                data:'zonein://payment-failed'
+            })
         }
     }
     async function getOrderData(orderid) {
