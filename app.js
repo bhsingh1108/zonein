@@ -80,19 +80,20 @@ app.use(
   app.get("/hosted_events/:user_id", Users.gethostedevents);
   app.put("/update_user/:user_id", Users.updateUser);
   app.post("/payments",Payment.makePayment);
-  app.delete('/ticket/:user_id/:ticket_id/:event_id',Ticket.deleteticket)
-  app.get("/hosted_events/:user_id", Users.gethostedevents)
-  app.put("/update_user/:user_id", Users.updateUser)
+  app.delete('/ticket/:user_id/:ticket_id/:event_id',Ticket.deleteticket);
+  app.get("/hosted_events/:user_id", Users.gethostedevents);
+  app.put("/update_user/:user_id", Users.updateUser);
   app.post("/callback/order/:order_id",Callback.getcallbacks);
-  app.get("/orders/:orderid", Order.getorders)
+  app.get("/orders/:orderid", Order.getorders);
   app.post("/verify/order/:order_id",upload.none(),PaymentVerification.getverification);
+  app.get('/postpayment/:orderid',Order.getPostPayment);
   app.get('/payment-completed',(req, res) => {
-    res.send({status:200,data:"zonein://payment-completed"});
-   // res.redirect('zonein://payment-completed');
+   // res.send({status:200,data:"zonein://payment-completed"});
+    res.redirect('zonein://payment-completed');
   });
   app.get('/payment-failed',(req, res) => {
-    res.send({status:200,data:"zonein://payment-completed"});
-   // res.redirect('zonein://payment-completed');
+    // res.send({status:200,data:"zonein://payment-completed"});
+   res.redirect('zonein://payment-completed');
   });
 
   app.listen(port, () => {
