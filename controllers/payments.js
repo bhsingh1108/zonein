@@ -70,8 +70,8 @@ exports.makePayment = async (req, res) => {
     phone: `+971${userCheckResponse.data[0].mobile}`,
     street1: "Sheikh Mohammed Bin Rashed Blvd",
     city: "Dubai",
-    state: "AbuDubai",
-    country: "UAE",
+    state: "Dubai",
+    country: "United Arab Emirates",
     zip: "123234",
     ip: "1.1.1.1",
   };
