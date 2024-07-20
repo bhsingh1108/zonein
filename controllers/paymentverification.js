@@ -34,20 +34,22 @@ exports.getverification = async(req, res) => {
                           }
                         });
                         console.log($results);
-                        res.send({
-                            status:200,
-                            data:'https://zonein.ae/success'
-                        })
+                        res.redirect('zonein://payment-completed');
+                        // res.send({
+                        //     status:200,
+                        //     data:'https://zonein.ae/success'
+                        // })
                     }
                     
                 }
                 PayTabs.validatePayment(paymentVerificationData.tranRef, queryRequested);
             }
         }else{
-            res.send({
-                status:200,
-                data:'https://zonein.ae/failure'
-            })
+            res.redirect('zonein://payment-failed');
+            // res.send({
+            //     status:200,
+            //     data:'https://zonein.ae/failure'
+            // })
         }
     }
     async function getOrderData(orderid) {
