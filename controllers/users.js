@@ -5,7 +5,7 @@ exports.postusers = (req, res) => {
     const user = {
         username: req.body.first_name +' '+ last_name,
         mobile: req.body.phone_number,
-        email: req.body.email?req.body.email:'',
+       // email: req.body.email?req.body.email:'',
         // passport_no: req.body.passport_no?req.body.passport_no:'null',
         // profile_pic: profilePicEncoded,
     };
