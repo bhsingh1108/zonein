@@ -91,7 +91,6 @@ exports.makePayment = async (req, res) => {
   let url = {
     callback: `${process.env.BASE_URL}callback/order/`+cart.id, ///recives all data regarding payment details and irrespective of status
     response: `${process.env.BASE_URL}verify/order/`+ cart.id, //after payment customer is redirected here
-  // response: `zonein://payment-completed`
   };
   let response_URLs = [url.callback, url.response];
 
