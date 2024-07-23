@@ -95,6 +95,7 @@ app.use(
      //res.send({status:200,data:"zonein://payment-completed"});
    res.redirect('zonein://payment-completed');
   });
+  app.get('/getCompletedOrder/:userid',Order.getCompletedOrder);
 
   app.listen(port, () => {
     console.log(`App listening http://localhost:${port}`);

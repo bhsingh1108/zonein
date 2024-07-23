@@ -127,13 +127,19 @@ exports.updateEvent=(req,res)=>{
 exports.getEventOnUserEvent=(req,res)=>{
   var connection = req.app.get("conn");
   const eventid=req.params.eventid;
-  const sql = "select id,userid,event_title,event_status,event_thumbnail,ticket_price from event_details where  id=?";
+  const sql = "select * from event_details where  id=?";
   connection.query(sql, [eventid], (err, result) => {
       if (err) {
         return res.status(500).send(err);
       }
       if (result.length > 0) {
-        const data = result;           
+        const data = result; 
+        for (let i = 0; i < data.length; i++) {
+          data[i].pass_enc = Buffer.from(data[i].pass_enc, 'base64').toString('ascii');
+              data[i].user_selfie = data[i].user_selfie!=null?Buffer.from(data[i].user_selfie, 'base64').toString('ascii'):'';
+              data[i].property_images_1=JSON.parse(data[i].property_images_1);
+              data[i].ammenities=JSON.parse(data[i].ammenities);   
+      }          
         res.send({
             'status': 200,
             'data': data
