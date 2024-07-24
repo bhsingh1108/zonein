@@ -139,37 +139,61 @@ exports.getHostedEventPaidTickets=async(req,res)=>{
     }
     if (results.length > 0 && results[0].event_id) {
       const eventIds = results[0].event_id.split(',');
-      let eventData = [];
-      for (const eventId of eventIds) {
-        const event = await getEvent(eventId);
-        const getTitPoql ="SELECT  ticketid FROM post_orders WHERE eventid = ?";
-        connection.query(getTitPoql, [eventId], async (err, ticketPo) => {
-          if (err) {
-            return res.status(500).send(err);
-          }
-          if(ticketPo.length>0 && ticketPo[0].ticketid){
-            const tickets=ticketPo[0].ticketid.replace(/[\[\]]/g, '').split(',').map(Number);
-            const getTicketDetails ="SELECT  * FROM ticket_details WHERE id in (?)";
-            connection.query(getTicketDetails, [tickets], async (err, ticketData) => {
-              if (err) {
-                return res.status(500).send(err);
-              }
-              if(ticketData.length>0){
-                eventData.push({
-                  ...event,
-                  ticketData:ticketData
-                });
-              }
+      
+      const eventDataPromises = eventIds.map(async (eventId) => {
+        try {
+          const event = await getEvent(eventId);
+          const ticketPo = await new Promise((resolve, reject) => {
+            const getTitPoql = "SELECT ticketid FROM post_orders WHERE eventid = ?";
+            connection.query(getTitPoql, [eventId], (err, results) => {
+              if (err) reject(err);
+              else resolve(results);
             });
+          });
+          if (ticketPo.length > 0 && ticketPo[0].ticketid) {
+            const tickets = ticketPo[0].ticketid.replace(/[\[\]]/g, '').split(',').map(Number);
+            const ticketData = await new Promise((resolve, reject) => {
+              const getTicketDetails = "SELECT * FROM ticket_details WHERE id IN (?)";
+              connection.query(getTicketDetails, [tickets], (err, results) => {
+                if (err) reject(err);
+                else resolve(results);
+              });
+            });
+            return {
+              ...event,
+              ticketData: ticketData
+            };
+          } else {
+            return {
+              ...event,
+              ticketData: [] // Return empty array if no tickets
+            };
           }
+        } catch (error) {
+          console.error(`Error processing eventId ${eventId}:`, error);
+          return {
+            id: eventId,
+            ticketData: [] // Return empty array on error
+          };
+        }
+      });
+    
+      try {
+        const eventData = await Promise.all(eventDataPromises);
+        res.send({
+          status: 200,
+          data: eventData
         });
-
+      } catch (error) {
+        res.status(500).send(error);
       }
+    } else {
       res.send({
-        status:200,
-        data:eventData
-      })
+        status: 200,
+        data: []
+      });
     }
+
   });
   async function getEvent(eventid) {
     const URL = process.env.BASE_URL + `get_event_userid_eventid/${eventid}`;
