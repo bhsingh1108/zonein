@@ -76,9 +76,6 @@ app.use(
   app.get("/ticket/:user_id/:event_id",Ticket.getticket); 
   app.get("/user/:user_id",Users.getusers);
   app.get("/events/:user_id",Users.getevents);
-  app.delete('/ticket/:user_id/:ticket_id/:event_id',Ticket.deleteticket);
-  app.get("/hosted_events/:user_id", Users.gethostedevents);
-  app.put("/update_user/:user_id", Users.updateUser);
   app.post("/payments",Payment.makePayment);
   app.delete('/ticket/:user_id/:ticket_id/:event_id',Ticket.deleteticket);
   app.get("/hosted_events/:user_id", Users.gethostedevents);
@@ -96,6 +93,7 @@ app.use(
    res.redirect('zonein://payment-completed');
   });
   app.get('/getCompletedOrder/:userid',Order.getCompletedOrder);
+  app.get('/hostedEventPaidTickets/:userid',Order.getHostedEventPaidTickets);
 
   app.listen(port, () => {
     console.log(`App listening http://localhost:${port}`);

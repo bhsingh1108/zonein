@@ -45,15 +45,9 @@ exports.getCompletedOrder = async (req, res) => {
     const processData = (data) => {
       return new Promise((resolve, reject) => {
         const getTicketSql = "select * from ticket_details where id in (?)";
-        const ticketidUprooted = data.ticketid
-          .replace(/[\[\]]/g, "")
-          .split(",")
-          .map(Number);
+        const ticketidUprooted = data.ticketid.replace(/[\[\]]/g, "").split(",").map(Number);
 
-        connection.query(
-          getTicketSql,
-          [ticketidUprooted],
-          async (err, resultsTicket) => {
+        connection.query(getTicketSql,[ticketidUprooted],async (err, resultsTicket) => {
             if (err) {
               return reject(err);
             }
@@ -127,6 +121,74 @@ exports.getCompletedOrder = async (req, res) => {
     }
   }
 };
+
+
+exports.getHostedEventPaidTickets=async(req,res)=>{
+  var connection = req.app.get("conn");
+  const axios = require("axios");
+  const userid = req.params.userid;
+  if (!userid) {
+    return res.status(400).send({ data: "order id is required" });
+  }
+  const getIdSql =
+    "SELECT  group_concat(id) as event_id FROM event_details WHERE userid = ?";
+
+  connection.query(getIdSql, [userid], async (err, results) => {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    if (results.length > 0 && results[0].event_id) {
+      const eventIds = results[0].event_id.split(',');
+      let eventData = [];
+      for (const eventId of eventIds) {
+        const event = await getEvent(eventId);
+        const getTitPoql ="SELECT  ticketid FROM post_orders WHERE eventid = ?";
+        connection.query(getTitPoql, [eventId], async (err, ticketPo) => {
+          if (err) {
+            return res.status(500).send(err);
+          }
+          if(ticketPo.length>0 && ticketPo[0].ticketid){
+            const tickets=ticketPo[0].ticketid.replace(/[\[\]]/g, '').split(',').map(Number);
+            const getTicketDetails ="SELECT  * FROM ticket_details WHERE id in (?)";
+            connection.query(getTicketDetails, [tickets], async (err, ticketData) => {
+              if (err) {
+                return res.status(500).send(err);
+              }
+              if(ticketData.length>0){
+                eventData.push({
+                  ...event,
+                  ticketData:ticketData
+                });
+              }
+            });
+          }
+        });
+
+      }
+      res.send({
+        data:eventData
+      })
+    }
+  });
+  async function getEvent(eventid) {
+    const URL = process.env.BASE_URL + `get_event_userid_eventid/${eventid}`;
+    try {
+      const response = await axios.get(URL);
+      if (response.data.status === 300) {
+        return false;
+      } else {
+        return response.data.data[0];
+      }
+    } catch (error) {
+      console.error("Error making GET request:", error);
+      throw error;
+    }
+  }
+}
+
+
+
+
 
 exports.getPostPayment = async (req, res) => {
   var connection = req.app.get("conn");

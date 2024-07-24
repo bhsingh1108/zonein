@@ -14,7 +14,12 @@ exports.createEvent = async(req, res) => {
  // `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`
   var passEncoded = req.body.pass_enc?Buffer.from(req.body.pass_enc).toString('base64'):'';
   const profile_pic=await getUserProfilePic(req.body.userid);
-  const profile_pic_encoded=Buffer.from(profile_pic).toString('base64');
+  if(profile_pic!=null){
+    var profile_pic_encoded=Buffer.from(profile_pic).toString('base64');
+  }else{
+    var profile_pic_encoded='';
+  }
+  
   const event_data = {
     userid: req.body.userid,
     event_title: req.body.event_title,
