@@ -166,6 +166,7 @@ exports.getHostedEventPaidTickets=async(req,res)=>{
 
       }
       res.send({
+        status:200,
         data:eventData
       })
     }
