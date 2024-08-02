@@ -134,7 +134,9 @@ exports.getEventOnUserEvent=(req,res)=>{
   const eventid=req.params.eventid;
   const sql = "select * from event_details where  id=?";
   connection.query(sql, [eventid], (err, result) => {
+      // connection.release();
       if (err) {
+        console.log('error',err);
         return res.status(500).send(err);
       }
       if (result.length > 0) {

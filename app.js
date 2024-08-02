@@ -48,13 +48,14 @@ app.use(
     },
     })
   );
-  const connection = mysql.createConnection({
+  const connection = mysql.createPool({
+    connectionLimit: 500,
     host: process.env.DB_HOST, //103.191.208.137
     user: process.env.DB_USER,
     password: process.env.DB_PASSWORD,
-    database: process.env.DB_DBNAME
+    database: process.env.DB_DBNAME,
   });
-  connection.connect((err) => {
+  connection.getConnection((err) => {
     if (err) {
       console.error('Error connecting to MySQL database: ' + err.stack);
       return;
