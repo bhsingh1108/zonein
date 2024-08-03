@@ -91,7 +91,7 @@ app.use(
   });
   app.get('/payment-failed',(req, res) => {
      //res.send({status:200,data:"zonein://payment-completed"});
-   res.redirect('zonein://');
+   res.redirect('zonein://payment-completed');
   });
   app.get('/getCompletedOrder/:userid',Order.getCompletedOrder);
   app.get('/hostedEventPaidTickets/:userid',Order.getHostedEventPaidTickets);
