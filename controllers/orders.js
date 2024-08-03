@@ -154,8 +154,16 @@ exports.getHostedEventPaidTickets=async(req,res)=>{
             const ticketData = await new Promise((resolve, reject) => {
               const getTicketDetails = "SELECT * FROM ticket_details WHERE id IN (?)";
               connection.query(getTicketDetails, [tickets], (err, results) => {
-                if (err) reject(err);
-                else resolve(results);
+                if (err){
+                   reject(err);
+                  }
+                else{ 
+                  results.forEach(result => {
+                    result.pass_enc = Buffer.from(result.pass_enc, 'base64').toString('ascii');
+                  });
+                  console.log(results);
+                  resolve(results);
+                }
               });
             });
             return {
