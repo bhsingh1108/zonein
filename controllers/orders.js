@@ -131,8 +131,7 @@ exports.getHostedEventPaidTickets=async(req,res)=>{
     return res.status(400).send({ data: "order id is required" });
   }
   const getIdSql =
-    "SELECT  group_concat(id) as event_id FROM event_details WHERE userid = ?";
-
+    "SELECT  group_concat(id ORDER BY id DESC) as event_id FROM event_details WHERE userid = ?";
   connection.query(getIdSql, [userid], async (err, results) => {
     if (err) {
       return res.status(500).send(err);
