@@ -5,7 +5,6 @@ exports.getverification = async(req, res) => {
     var connection = req.app.get('conn');
     const orderid = req.params.order_id;
     const paymentVerificationData = req.body;
-    console.log(paymentVerificationData);
     const getPreOrderData=await getOrderData(orderid);
     let profileID = process.env.PROFILE_ID,
         serverKey = process.env.SERVER_KEY,
@@ -33,7 +32,7 @@ exports.getverification = async(req, res) => {
                             return res.status(500).send(err);
                           }
                         });
-                        console.log($results);
+                        console.log('here are results',$results);
                         res.redirect('https://backend.zonein.ae/payment-completed');
                     }
                     
@@ -41,7 +40,30 @@ exports.getverification = async(req, res) => {
                 PayTabs.validatePayment(paymentVerificationData.tranRef, queryRequested);
             }
         }else{
-            res.redirect('https://backend.zonein.ae/payment-failed');
+            if(paymentVerificationData.tranRef===getPreOrderData.token){
+              if(getPreOrderData.is_paid==='paid'){
+                let postOrderData = {
+                  userid: getPreOrderData.userid,
+                  amount: getPreOrderData.amount,
+                  ticketid: getPreOrderData.ticketid,
+                  eventid: parseInt(getPreOrderData.eventid),
+                  orderid: orderid,
+                  currency: "AED",
+                  is_paid:getPreOrderData.is_paid,
+                  transaction_id:paymentVerificationData.tranRef,
+                  verification_response:JSON.stringify(paymentVerificationData)
+                };
+              const sql = "INSERT INTO post_orders SET ?";
+              connection.query(sql, postOrderData, (err, result) => {
+                if (err) {
+                  return res.status(500).send(err);
+                }
+              });
+              res.redirect('https://backend.zonein.ae/payment-completed');
+              }
+            }
+            
+           // res.redirect('https://backend.zonein.ae/payment-failed');
         }
     }
     async function getOrderData(orderid) {
