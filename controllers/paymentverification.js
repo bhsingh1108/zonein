@@ -62,7 +62,7 @@ exports.getverification = async(req, res) => {
               res.redirect('https://backend.zonein.ae/payment-completed');
               }
             }
-           // res.redirect('https://backend.zonein.ae/payment-failed');
+            res.redirect('https://backend.zonein.ae/payment-failed');
         }
     }
     async function getOrderData(orderid) {
