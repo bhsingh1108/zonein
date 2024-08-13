@@ -32,19 +32,18 @@ exports.getverification = async(req, res) => {
                             return res.status(500).send(err);
                           }
                         });
-                        const ticketIdsToUpdate = getPreOrderData.ticketid.join(',');
-                        const ticketStatusUpdatequery = `UPDATE ticket_details SET status = 1 WHERE id IN (?);`;
-                        connection.query(ticketStatusUpdatequery, ticketIdsToUpdate, (err, resultTicketUpdate) => {
+                        const ticketidUprooted = getPreOrderData.ticketid.replace(/[\[\]]/g, "").split(",").map(Number);
+                        const ticketStatusUpdatequery = `UPDATE ticket_details SET status = 1 WHERE id IN (?)`;
+                        connection.query(ticketStatusUpdatequery, [ticketidUprooted], (err, resultTicketUpdate) => {
                           if (err) {
                             return res.status(500).send(err);
                           }
                           console.log(resultTicketUpdate);
                         });
                         res.redirect('https://backend.zonein.ae/payment-completed');
-                    }
-                    
-                }
-                PayTabs.validatePayment(paymentVerificationData.tranRef, queryRequested);
+                   } 
+               }
+               PayTabs.validatePayment(paymentVerificationData.tranRef, queryRequested);
             }
         }else{
             if(paymentVerificationData.tranRef===getPreOrderData.token){
