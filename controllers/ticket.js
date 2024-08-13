@@ -23,7 +23,7 @@ exports.postticket = (req, res) => {
 
 exports.getticket = (req, res) => {
     var connection = req.app.get('conn');
-    const getTicketSql = 'SELECT * FROM ticket_details WHERE userid = ? AND event_id = ?';
+    const getTicketSql = 'SELECT * FROM ticket_details WHERE userid = ? AND event_id = ? and status=0';
     connection.query(getTicketSql, [req.params.user_id, req.params.event_id], (err, results) => {
         if (err) {
             return res.status(500).send(err);
