@@ -32,7 +32,14 @@ exports.getverification = async(req, res) => {
                             return res.status(500).send(err);
                           }
                         });
-                        console.log('here are results',$results);
+                        const ticketIdsToUpdate = getPreOrderData.ticketid.join(',');
+                        const ticketStatusUpdatequery = `UPDATE ticket_details SET status = 1 WHERE id IN (?);`;
+                        connection.query(ticketStatusUpdatequery, ticketIdsToUpdate, (err, resultTicketUpdate) => {
+                          if (err) {
+                            return res.status(500).send(err);
+                          }
+                          console.log(resultTicketUpdate);
+                        });
                         res.redirect('https://backend.zonein.ae/payment-completed');
                     }
                     
